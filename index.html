@@ -404,7 +404,9 @@
               if (res.data) {
                 let url = res.data.split("/v1/");
                 url = apiUrlEndPoint + url[1];
-                win = window.open(url, null, "height=1000,width=650,status=no,toolbar=no,menubar=no,location=no");
+                win = window.open();
+                win.location = url;
+//                 win = window.open(url, null, "height=1000,width=650,status=no,toolbar=no,menubar=no,location=no");
               } else {
                 alert("Error occurred.");
               }
