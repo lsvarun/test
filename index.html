@@ -221,7 +221,7 @@
 
 <body>
   <center>
-    <h3>Property Management System - Demo 1</h3>
+    <h3>Property Management System - Demo</h3>
   </center>
   <div id="loader">Loading...</div>
   <form id="my-payment-form">
@@ -285,18 +285,27 @@
   <h1 id="txn_response">Response</h1>
 </body>
 <script>
-  // const apiUrlEndPoint = "http://localhost:4000/api/v1/"; // Local
+  let oauthPopup = null;
+  const width = 500;
+  const height = 600;
+  if (oauthPopup === null || oauthPopup?.closed) {
+    console.log(oauthPopup);
+    oauthPopup = window.open("", "", `modal=yes, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}`);
+  }
+  const apiUrlEndPoint = "http://localhost:4000/api/v1/"; // Local
   // const apiUrlEndPoint = "https://payments.stayntouchpay.com/v1/"; // Production
-  const apiUrlEndPoint = "https://payments.dev.stayntouchpay.com/v1/"; // Dev
+  // const apiUrlEndPoint = "https://payments.dev.stayntouchpay.com/v1/"; // Dev
 
-  let win = window.open();
-  alert(JSON.stringify(win))
+  let win;
   window.addEventListener('message', function messageListener(event) {
     const eventMessage = event.data?.message;
     if (eventMessage === 'submit') {
       document.getElementById('txn_response').innerHTML = JSON.stringify(event.data.value) ? JSON.stringify(event.data.value) : 'Response';
       if (win) {
         win.close();
+      }
+      if (oauthPopup) {
+        oauthPopup.close();
       }
     }
   });
@@ -405,11 +414,12 @@
               if (res.data) {
                 let url = res.data.split("/v1/");
                 url = apiUrlEndPoint + url[1];
-                alert(url)
-                                alert(JSON.stringify(win))
-
-                win.location.href = url;
-//                 win = window.open(url, null, "height=1000,width=650,status=no,toolbar=no,menubar=no,location=no");
+                console.log(oauthPopup)
+                oauthPopup.location = url;
+                oauthPopup.focus();
+                // win = window.open(url, null, "height=1000,width=650,status=no,toolbar=no,menubar=no,location=no");
+                // var node = document.getElementById("myIframe").data = url;
+                // document.getElementById("payment-modal-id").style.display = "flex";
               } else {
                 alert("Error occurred.");
               }
