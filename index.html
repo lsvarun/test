@@ -226,7 +226,7 @@
   <div id="loader">Loading...</div>
   <form id="my-payment-form">
     <div class="form-group">
-      <a href="www.google.com"
+      <a href="https://google.com"
         onclick="window.open(this.href,'_blank','height=500,width=500,status=no, toolbar=no,menubar=no,location=no');return false">Link
         TEXT or IMAGE HERE</a>
       <div class="form-control">
@@ -390,6 +390,16 @@
     xhttp.setRequestHeader('Authorization', 'Bearer 9uXugR3Lx2mLAIJ72aX33qFnhKvl');
   }
 
+  function openUrl(url) {
+    let a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.target = '_blank';
+    a.href = url;
+    a.click();
+    document.body.removeChild(a);
+  }
+
   function payNow(jsonData) {
     let xhttp = new XMLHttpRequest();
 
@@ -409,9 +419,10 @@
               if (res.data) {
                 let url = res.data.split("/v1/");
                 url = apiUrlEndPoint + url[1];
-                setTimeout(() => {
-                  win = window.open(url, null, "height=1000,width=650,status=no,toolbar=no,menubar=no,location=no");
-                })
+                openUrl(url);
+                // setTimeout(() => {
+                //   win = window.open(url, null, "height=1000,width=650,status=no,toolbar=no,menubar=no,location=no");
+                // })
                 // var node = document.getElementById("myIframe").data = url;
                 // document.getElementById("payment-modal-id").style.display = "flex";
               } else {
@@ -426,6 +437,8 @@
     };
     xhttp.send();
   }
+
+
 </script>
 
 </html>
