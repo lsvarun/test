@@ -289,7 +289,7 @@
   // const apiUrlEndPoint = "https://payments.stayntouchpay.com/v1/"; // Production
   const apiUrlEndPoint = "https://payments.dev.stayntouchpay.com/v1/"; // Dev
 
-  let win;
+  let win = window.open();
   window.addEventListener('message', function messageListener(event) {
     const eventMessage = event.data?.message;
     if (eventMessage === 'submit') {
@@ -404,7 +404,7 @@
               if (res.data) {
                 let url = res.data.split("/v1/");
                 url = apiUrlEndPoint + url[1];
-                win = window.open();
+                
                 win.location = url;
 //                 win = window.open(url, null, "height=1000,width=650,status=no,toolbar=no,menubar=no,location=no");
               } else {
