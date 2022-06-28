@@ -226,7 +226,9 @@
   <div id="loader">Loading...</div>
   <form id="my-payment-form">
     <div class="form-group">
-      <a id="asdasdasd" href="http://stackoverflow.com">StackOverflow</a>
+      <a href="https://google.com"
+        onclick="window.open(this.href,'_blank','height=500,width=500,status=no, toolbar=no,menubar=no,location=no');return false">Link
+        TEXT or IMAGE HERE</a>
       <div class="form-control">
         <label>Gateway</label>
         <select id="gatewayName">
@@ -302,6 +304,7 @@
       }
     }
   });
+
 
   document.getElementById('my-payment-form').addEventListener('submit', function (e) {
     document.getElementById('loader').style.display = "flex";
@@ -388,21 +391,13 @@
   }
 
   function openUrl(url) {
-    var w0 = window.open(url);
-    alert("w0: " + !!w0); // w0: true
-
-    window.setTimeout(function () {
-      // this will be blocked
-      var w1 = window.open(url);
-      alert("w1: " + !!w1); // w1: false
-    }, 5000);
-    // let a = document.createElement("a");
-    // document.body.appendChild(a);
-    // a.style = "display: none";
-    // a.target = '_blank';
-    // a.href = url;
-    // a.click();
-    // document.body.removeChild(a);
+    let a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.target = '_blank';
+    a.href = url;
+    a.click();
+    document.body.removeChild(a);
   }
 
   function payNow(jsonData) {
