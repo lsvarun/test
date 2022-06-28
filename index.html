@@ -226,9 +226,9 @@
   <div id="loader">Loading...</div>
   <form id="my-payment-form">
     <div class="form-group">
-<a href="www.google.com
-onclick="window.open(this.href,'_blank','height=500,width=500,status=no, toolbar=no,menubar=no,location=no');return false"
->Link TEXT or IMAGE HERE</a>
+      <a href="www.google.com"
+        onclick="window.open(this.href,'_blank','height=500,width=500,status=no, toolbar=no,menubar=no,location=no');return false">Link
+        TEXT or IMAGE HERE</a>
       <div class="form-control">
         <label>Gateway</label>
         <select id="gatewayName">
@@ -295,7 +295,7 @@ onclick="window.open(this.href,'_blank','height=500,width=500,status=no, toolbar
     oauthPopup = window.open("", "", `modal=yes, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}`);
     alert(JSON.stringify(oauthPopup))
   }
-//   const apiUrlEndPoint = "http://localhost:4000/api/v1/"; // Local
+  //   const apiUrlEndPoint = "http://localhost:4000/api/v1/"; // Local
   // const apiUrlEndPoint = "https://payments.stayntouchpay.com/v1/"; // Production
   const apiUrlEndPoint = "https://payments.dev.stayntouchpay.com/v1/"; // Dev
 
