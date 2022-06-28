@@ -217,9 +217,6 @@
       word-break: break-all;
     }
   </style>
-
-  <script src="https://hpc.uat.freedompay.com/api/v1.5/cdn/cardinal_min.js"></script>
-  <script src="https://hpc.uat.freedompay.com/api/v1.5/cdn/hpc_min.js"></script>
 </head>
 
 <body>
@@ -229,6 +226,20 @@
   <div id="loader">Loading...</div>
   <form id="my-payment-form">
     <div class="form-group">
+
+      <div class="form-control">
+        <label>Gateway</label>
+        <select id="gatewayName">
+          <option value="00000000-61a0-a20a-fde5-c27fddc4800e">Planet Payment (3C)</option>
+          <option value="00000000-61a0-a20a-fde5-c27fddc48002">Freedompay</option>
+          <option value="00000000-61a0-a20a-fde5-c27fddc45a76">Fusebox</option>
+          <option value="00000000-61a0-a207-fde5-c27fddc4800a">Shift4</option>
+          <option value="00000000-61a0-a209-fde5-c27fddc4800d">Heartland</option>
+          <option value="00000000-61a0-a20a-fde5-c27fddc48001">Adyen</option>
+          <option value="00000000-61a0-a20a-fde5-c27fddc4800f">Stripe</option>
+          <option value="00000000-61a0-a20a-fde5-c27fddc48035">Authorize.NET</option>
+        </select>
+      </div>
       <div class="form-control">
         <label>Card Holder Name</label>
         <input name="name" type="text" id="cardHolderName">
@@ -368,18 +379,7 @@
 
   function setRequestHeaders(xhttp) {
     xhttp.setRequestHeader('X-MERCHANT-ID', '00000000-61a0-a2be-2990-f501fe9db655');
-    // xhttp.setRequestHeader('X-PROPERTY-ID', '00000000-61a0-a20a-fde5-c27fddc4800e');     // planet payment
-    xhttp.setRequestHeader('X-PROPERTY-ID', '00000000-61a0-a20a-fde5-c27fddc48002');     /// freedom pay
-    // xhttp.setRequestHeader('X-PROPERTY-ID', '00000000-61a0-a20a-fde5-c27fddc45a76');     // fusebox - ok
-
-    // xhttp.setRequestHeader('X-PROPERTY-ID', '00000000-61a0-a207-fde5-c27fddc4800a');        // shift4
-    // xhttp.setRequestHeader('X-PROPERTY-ID', '00000000-61a0-a209-fde5-c27fddc4800d');     // heartland
-    // xhttp.setRequestHeader('X-PROPERTY-ID', '00000000-61a0-a20a-fde5-c27fddc48001');     // adyen - fixed
-    // xhttp.setRequestHeader('X-PROPERTY-ID', '2d70d6c4-d508-11ec-a8fb-6b74000492a5');     // adyen 2
-    // xhttp.setRequestHeader('X-PROPERTY-ID', '00000000-61a0-a20a-fde5-c27fddc4800f');     // stripe
-    // xhttp.setRequestHeader('X-PROPERTY-ID', '00000000-61a0-a205-fde5-c27fddc48009');     // nexio
-    // xhttp.setRequestHeader('X-PROPERTY-ID', '00000000-61a0-a20a-fde5-c27fddc48035');     // authorize.net
-
+    xhttp.setRequestHeader('X-PROPERTY-ID', document.getElementById('gatewayName')?.value);
     xhttp.setRequestHeader('accept', 'application/json');
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.setRequestHeader('Authorization', 'Bearer 9uXugR3Lx2mLAIJ72aX33qFnhKvl');
