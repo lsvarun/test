@@ -226,15 +226,12 @@
   <div id="loader">Loading...</div>
   <form id="my-payment-form">
     <div class="form-group">
-      <a
-        onclick="window.open('https://google.com','_blank','height=500,width=500,status=no, toolbar=no,menubar=no,location=no');return false">Link
-        TEXT or IMAGE HERE</a>
       <div class="form-control">
         <label>Gateway</label>
         <select id="gatewayName">
+          <option value="00000000-61a0-a20a-fde5-c27fddc45a76">Fusebox</option>
           <option value="00000000-61a0-a20a-fde5-c27fddc4800e">Planet Payment (3C)</option>
           <option value="00000000-61a0-a20a-fde5-c27fddc48002">Freedompay</option>
-          <option value="00000000-61a0-a20a-fde5-c27fddc45a76">Fusebox</option>
           <option value="00000000-61a0-a207-fde5-c27fddc4800a">Shift4</option>
           <option value="00000000-61a0-a209-fde5-c27fddc4800d">Heartland</option>
           <option value="00000000-61a0-a20a-fde5-c27fddc48001">Adyen</option>
@@ -287,21 +284,13 @@
   <h1 id="txn_response">Response</h1>
 </body>
 <script>
-  //   const apiUrlEndPoint = "http://localhost:4000/api/v1/"; // Local
   // const apiUrlEndPoint = "https://payments.stayntouchpay.com/v1/"; // Production
   const apiUrlEndPoint = "https://payments.dev.stayntouchpay.com/v1/"; // Dev
 
-  let win;
   window.addEventListener('message', function messageListener(event) {
     const eventMessage = event.data?.message;
     if (eventMessage === 'submit') {
       document.getElementById('txn_response').innerHTML = JSON.stringify(event.data.value) ? JSON.stringify(event.data.value) : 'Response';
-      if (win) {
-        win.close();
-      }
-      if (oauthPopup) {
-        oauthPopup.close();
-      }
     }
   });
 
@@ -382,20 +371,17 @@
     document.getElementById("payment-modal-id").style.display = "none";
   }));
 
+
+  const params = new URLSearchParams(window.location.search);
+
   function setRequestHeaders(xhttp) {
     xhttp.setRequestHeader('X-MERCHANT-ID', '00000000-61a0-a2be-2990-f501fe9db655');
     xhttp.setRequestHeader('X-PROPERTY-ID', document.getElementById('gatewayName')?.value);
     xhttp.setRequestHeader('accept', 'application/json');
     xhttp.setRequestHeader('Content-Type', 'application/json');
-    xhttp.setRequestHeader('Authorization', 'Bearer 9uXugR3Lx2mLAIJ72aX33qFnhKvl');
+    xhttp.setRequestHeader('Authorization', 'Bearer ' + (params.has('token') ? params.get('token') : 'nfEoVODMHqpKHDTy26Coe2srv7Av'));
   }
 
-  function openUrl(url) {
-    var link = document.createElement('a');
-    link.href = url;
-    document.body.appendChild(link);
-    link.click();
-  }
 
   function payNow(jsonData) {
     let xhttp = new XMLHttpRequest();
@@ -416,13 +402,8 @@
               if (res.data) {
                 let url = res.data.split("/v1/");
                 url = apiUrlEndPoint + url[1];
-                alert(url);
-                openUrl(url);
-                // setTimeout(() => {
-                //   win = window.open(url, null, "height=1000,width=650,status=no,toolbar=no,menubar=no,location=no");
-                // })
-                // var node = document.getElementById("myIframe").data = url;
-                // document.getElementById("payment-modal-id").style.display = "flex";
+                var node = document.getElementById("myIframe").src = url;
+                document.getElementById("payment-modal-id").style.display = "flex";
               } else {
                 alert("Error occurred.");
               }
