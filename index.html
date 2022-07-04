@@ -281,6 +281,16 @@
         <label>Amount</label>
         <input name="amount" type="text" id="amount">
       </div>
+      <div class="form-control">
+        <label>Currency</label>
+        <select id="currency">
+          <option value="INR">INR</option>
+          <option value="USD">USD</option>
+          <option value="CAD">CAD</option>
+          <option value="GBP">GBP</option>
+          <option value="EUR">EUR</option>
+        </select>
+      </div>
       <button class="pay-now">Pay Now</button>
     </div>
   </form>
@@ -374,7 +384,7 @@
     parsedData.sourceId = 121;
     parsedData.sourceType = 'Reservation';
     parsedData.industryType = 'LODGING';
-    parsedData.currency = 'CAD';
+    parsedData.currency = document.getElementById('currency')?.value;
     parsedData.referenceNumber = "1700021";
     parsedData.taxIndicator = '1';
     parsedData.consumerAuthentication = eval(document.getElementById('consumerAuthentication')?.value);
