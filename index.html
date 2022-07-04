@@ -229,15 +229,26 @@
       <div class="form-control">
         <label>Gateway</label>
         <select id="gatewayName">
-          <option value="00000000-61a0-a20a-fde5-c27fddc45a76">Fusebox</option>
           <option value="00000000-61a0-a20a-fde5-c27fddc4800e">Planet Payment (3C)</option>
           <option value="00000000-61a0-a20a-fde5-c27fddc48002">Freedompay</option>
+          <option value="00000000-61a0-a20a-fde5-c27fddc45a76">Fusebox</option>
           <option value="00000000-61a0-a207-fde5-c27fddc4800a">Shift4</option>
           <option value="00000000-61a0-a209-fde5-c27fddc4800d">Heartland</option>
           <option value="00000000-61a0-a20a-fde5-c27fddc48001">Adyen</option>
           <option value="00000000-61a0-a20a-fde5-c27fddc4800f">Stripe</option>
           <option value="00000000-61a0-a20a-fde5-c27fddc48035">Authorize.NET</option>
         </select>
+      </div>
+      <div class="form-control">
+        <label>Consumer Authentication</label>
+        <select id="consumerAuthentication" onchange="">
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+      </div>
+      <div class="form-control">
+        <label>Redirect URL</label>
+        <input name="redirectUrl" type="text" id="redirectUrl" value="https://enm44p1ntw8w.x.pipedream.net">
       </div>
       <div class="form-control">
         <label>Card Holder Name</label>
@@ -284,6 +295,8 @@
   <h1 id="txn_response">Response</h1>
 </body>
 <script>
+  // const apiUrlEndPoint = 'https://fe9c-180-188-224-145.ngrok.io/api/v1/'
+  // const apiUrlEndPoint = "http://localhost:4000/api/v1/"; // Local
   // const apiUrlEndPoint = "https://payments.stayntouchpay.com/v1/"; // Production
   const apiUrlEndPoint = "https://payments.dev.stayntouchpay.com/v1/"; // Dev
 
@@ -298,6 +311,7 @@
   document.getElementById('my-payment-form').addEventListener('submit', function (e) {
     document.getElementById('loader').style.display = "flex";
     e.preventDefault();
+    e.stopPropagation();
     let formData = new FormData(this);
     let parsedData = {};
     for (let name of formData) {
@@ -310,6 +324,7 @@
         }
       }
     }
+
     parsedData.isAuthOnly = parsedData.isAuthOnly === "true";
     parsedData.amount = Number(parsedData.amount);
     parsedData.taxTotal = Number((parsedData.amount * 0.18).toFixed(2));
@@ -359,9 +374,10 @@
     parsedData.sourceId = 121;
     parsedData.sourceType = 'Reservation';
     parsedData.industryType = 'LODGING';
-    parsedData.currency = 'USD';
+    parsedData.currency = 'CAD';
     parsedData.referenceNumber = "1700021";
     parsedData.taxIndicator = '1';
+    parsedData.consumerAuthentication = eval(document.getElementById('consumerAuthentication')?.value);
 
     payNow(parsedData);
 
@@ -371,17 +387,13 @@
     document.getElementById("payment-modal-id").style.display = "none";
   }));
 
-
-  const params = new URLSearchParams(window.location.search);
-
   function setRequestHeaders(xhttp) {
     xhttp.setRequestHeader('X-MERCHANT-ID', '00000000-61a0-a2be-2990-f501fe9db655');
     xhttp.setRequestHeader('X-PROPERTY-ID', document.getElementById('gatewayName')?.value);
     xhttp.setRequestHeader('accept', 'application/json');
     xhttp.setRequestHeader('Content-Type', 'application/json');
-    xhttp.setRequestHeader('Authorization', 'Bearer ' + (params.has('token') ? params.get('token') : 'nfEoVODMHqpKHDTy26Coe2srv7Av'));
+    xhttp.setRequestHeader('Authorization', 'Bearer 9uXugR3Lx2mLAIJ72aX33qFnhKvl');
   }
-
 
   function payNow(jsonData) {
     let xhttp = new XMLHttpRequest();
@@ -394,6 +406,7 @@
         let res = JSON.parse(this.responseText);
         if (res.data) {
           jsonData.referenceNumber = res.data;
+
           xhttp.open("POST", apiUrlEndPoint + 'iframe/url', true);
           setRequestHeaders(xhttp);
           xhttp.onreadystatechange = function () {
@@ -402,8 +415,12 @@
               if (res.data) {
                 let url = res.data.split("/v1/");
                 url = apiUrlEndPoint + url[1];
-                var node = document.getElementById("myIframe").src = url;
-                document.getElementById("payment-modal-id").style.display = "flex";
+                if (jsonData.consumerAuthentication && jsonData.redirectUrl) {
+                  window.location.href = url;
+                } else {
+                  const node = document.getElementById("myIframe").src = url;
+                  document.getElementById("payment-modal-id").style.display = "flex";
+                }
               } else {
                 alert("Error occurred.");
               }
