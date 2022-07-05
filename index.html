@@ -229,8 +229,8 @@
       <div class="form-control">
         <label>Gateway</label>
         <select id="gatewayName">
-          <option value="00000000-61a0-a20a-fde5-c27fddc4800e">Planet Payment (3C)</option>
           <option value="00000000-61a0-a20a-fde5-c27fddc48002">Freedompay</option>
+          <option value="00000000-61a0-a20a-fde5-c27fddc4800e">Planet Payment (3C)</option>
           <option value="00000000-61a0-a20a-fde5-c27fddc45a76">Fusebox</option>
           <option value="00000000-61a0-a207-fde5-c27fddc4800a">Shift4</option>
           <option value="00000000-61a0-a209-fde5-c27fddc4800d">Heartland</option>
@@ -284,11 +284,11 @@
       <div class="form-control">
         <label>Currency</label>
         <select id="currency">
-          <option value="INR">INR</option>
           <option value="USD">USD</option>
           <option value="CAD">CAD</option>
-          <option value="GBP">GBP</option>
           <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+          <option value="INR">INR</option>
         </select>
       </div>
       <button class="pay-now">Pay Now</button>
@@ -305,10 +305,10 @@
   <h1 id="txn_response">Response</h1>
 </body>
 <script>
-  // const apiUrlEndPoint = 'https://fe9c-180-188-224-145.ngrok.io/api/v1/'
+  const apiUrlEndPoint = 'https://d2ed-182-75-174-178.ngrok.io/api/v1/'
   // const apiUrlEndPoint = "http://localhost:4000/api/v1/"; // Local
   // const apiUrlEndPoint = "https://payments.stayntouchpay.com/v1/"; // Production
-  const apiUrlEndPoint = "https://payments.dev.stayntouchpay.com/v1/"; // Dev
+  // const apiUrlEndPoint = "https://payments.dev.stayntouchpay.com/v1/"; // Dev
 
   window.addEventListener('message', function messageListener(event) {
     const eventMessage = event.data?.message;
