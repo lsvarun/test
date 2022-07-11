@@ -90,7 +90,7 @@
 
     iframe {
       border: none;
-      height: 650px;
+      height: 530px;
       width: 100%;
       border-radius: 4px;
     }
@@ -216,6 +216,7 @@
     h1#txn_response {
       word-break: break-all;
     }
+
   </style>
 </head>
 
@@ -248,9 +249,10 @@
       </div>
       <div class="form-control">
         <label>Redirect URL</label>
-        <input name="redirectUrl" type="text" id="redirectUrl" value="https://enm44p1ntw8w.x.pipedream.net">
+        <input name="redirectUrl" type="text" id="redirectUrl"
+          value="https://en4sbdaskcvm4.x.pipedream.net/redirectUrl">
       </div>
-      <div class="form-control">
+      <div class=" form-control">
         <label>Card Holder Name</label>
         <input name="name" type="text" id="cardHolderName">
       </div>
@@ -305,8 +307,7 @@
   <h1 id="txn_response">Response</h1>
 </body>
 <script>
-//   const apiUrlEndPoint = 'https://d2ed-182-75-174-178.ngrok.io/api/v1/'
-  // const apiUrlEndPoint = "http://localhost:4000/api/v1/"; // Local
+//   const apiUrlEndPoint = "http://localhost:4000/api/v1/"; // Local
   // const apiUrlEndPoint = "https://payments.stayntouchpay.com/v1/"; // Production
   const apiUrlEndPoint = "https://payments.dev.stayntouchpay.com/v1/"; // Dev
 
@@ -337,7 +338,7 @@
 
     parsedData.isAuthOnly = parsedData.isAuthOnly === "true";
     parsedData.amount = Number(parsedData.amount);
-    parsedData.taxTotal = Number((parsedData.amount * 0.18).toFixed(2));
+    // parsedData.taxTotal = Number((parsedData.amount * 0.18).toFixed(2));
     parsedData.customer = {
       customerReference: '00001009',
       name: parsedData.name,
@@ -397,12 +398,14 @@
     document.getElementById("payment-modal-id").style.display = "none";
   }));
 
+  const token = new URLSearchParams(window.location.search).has('token') ? new URLSearchParams(window.location.search).get('token') : 'jcPpkq5igtNERctyQE1YAkB3cQQN';
+
   function setRequestHeaders(xhttp) {
     xhttp.setRequestHeader('X-MERCHANT-ID', '00000000-61a0-a2be-2990-f501fe9db655');
     xhttp.setRequestHeader('X-PROPERTY-ID', document.getElementById('gatewayName')?.value);
     xhttp.setRequestHeader('accept', 'application/json');
     xhttp.setRequestHeader('Content-Type', 'application/json');
-    xhttp.setRequestHeader('Authorization', 'Bearer T9M43fAzgwaMqstAcR7CGpxpmGjo');
+    xhttp.setRequestHeader('Authorization', 'Bearer ' + token);
   }
 
   function payNow(jsonData) {
