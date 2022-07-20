@@ -216,12 +216,13 @@
     h1#txn_response {
       word-break: break-all;
     }
+
   </style>
 </head>
 
 <body>
   <center>
-    <h3>Property Management System - Demo Prod</h3>
+    <h3>Property Management System - Demo</h3>
   </center>
   <div id="loader">Loading...</div>
   <form id="my-payment-form">
@@ -229,9 +230,9 @@
       <div class="form-control">
         <label>Gateway</label>
         <select id="gatewayName">
-          <option value="00000000-61a0-a20a-fde5-c27fddc45a76">Fusebox</option>
-          <option value="00000000-61a0-a20a-fde5-c27fddc4800e">Planet Payment (3C)</option>
           <option value="00000000-61a0-a20a-fde5-c27fddc48002">Freedompay</option>
+          <option value="00000000-61a0-a20a-fde5-c27fddc4800e">Planet Payment (3C)</option>
+          <option value="00000000-61a0-a20a-fde5-c27fddc45a76">Fusebox</option>
           <option value="00000000-61a0-a207-fde5-c27fddc4800a">Shift4</option>
           <option value="00000000-61a0-a209-fde5-c27fddc4800d">Heartland</option>
           <option value="00000000-61a0-a20a-fde5-c27fddc48001">Adyen</option>
@@ -240,6 +241,18 @@
         </select>
       </div>
       <div class="form-control">
+        <label>Consumer Authentication</label>
+        <select id="consumerAuthentication" onchange="">
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+      </div>
+      <div class="form-control">
+        <label>Redirect URL</label>
+        <input name="redirectUrl" type="text" id="redirectUrl"
+          value="https://en4sbdaskcvm4.x.pipedream.net/redirectUrl">
+      </div>
+      <div class=" form-control">
         <label>Card Holder Name</label>
         <input name="name" type="text" id="cardHolderName">
       </div>
@@ -270,6 +283,16 @@
         <label>Amount</label>
         <input name="amount" type="text" id="amount">
       </div>
+      <div class="form-control">
+        <label>Currency</label>
+        <select id="currency">
+          <option value="USD">USD</option>
+          <option value="CAD">CAD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+          <option value="INR">INR</option>
+        </select>
+      </div>
       <button class="pay-now">Pay Now</button>
     </div>
   </form>
@@ -284,7 +307,9 @@
   <h1 id="txn_response">Response</h1>
 </body>
 <script>
-  const apiUrlEndPoint = "https://payments.stayntouchpay.com/v1/"; // Production
+  // const apiUrlEndPoint = 'https://8208-180-188-224-239.ngrok.io/api/v1/'
+  // const apiUrlEndPoint = "http://localhost:4000/api/v1/"; // Local
+  const apiUrlEndPoint = "https://api-payments.stayntouch.plus/api/v1/health-check"; // Production
   // const apiUrlEndPoint = "https://payments.dev.stayntouchpay.com/v1/"; // Dev
 
   window.addEventListener('message', function messageListener(event) {
@@ -298,6 +323,7 @@
   document.getElementById('my-payment-form').addEventListener('submit', function (e) {
     document.getElementById('loader').style.display = "flex";
     e.preventDefault();
+    e.stopPropagation();
     let formData = new FormData(this);
     let parsedData = {};
     for (let name of formData) {
@@ -310,9 +336,10 @@
         }
       }
     }
+
     parsedData.isAuthOnly = parsedData.isAuthOnly === "true";
     parsedData.amount = Number(parsedData.amount);
-    parsedData.taxTotal = Number((parsedData.amount * 0.18).toFixed(2));
+    // parsedData.taxTotal = Number((parsedData.amount * 0.18).toFixed(2));
     parsedData.customer = {
       customerReference: '00001009',
       name: parsedData.name,
@@ -320,6 +347,7 @@
       state: parsedData.state,
       address: parsedData.address,
       postalCode: parsedData.postalCode,
+      email: 'example@example.com',
       country: 'IND'
     };
 
@@ -359,9 +387,10 @@
     parsedData.sourceId = 121;
     parsedData.sourceType = 'Reservation';
     parsedData.industryType = 'LODGING';
-    parsedData.currency = 'USD';
+    parsedData.currency = document.getElementById('currency')?.value;
     parsedData.referenceNumber = "1700021";
     parsedData.taxIndicator = '1';
+    parsedData.consumerAuthentication = eval(document.getElementById('consumerAuthentication')?.value);
 
     payNow(parsedData);
 
@@ -371,17 +400,15 @@
     document.getElementById("payment-modal-id").style.display = "none";
   }));
 
-
-  const params = new URLSearchParams(window.location.search);
+  const token = new URLSearchParams(window.location.search).has('token') ? new URLSearchParams(window.location.search).get('token') : 'ojnSpxyDkkYffr674k0hWXN83yKF';
 
   function setRequestHeaders(xhttp) {
     xhttp.setRequestHeader('X-MERCHANT-ID', '00000000-61a0-a2be-2990-f501fe9db655');
     xhttp.setRequestHeader('X-PROPERTY-ID', document.getElementById('gatewayName')?.value);
     xhttp.setRequestHeader('accept', 'application/json');
     xhttp.setRequestHeader('Content-Type', 'application/json');
-    xhttp.setRequestHeader('Authorization', 'Bearer ' + (params.has('token') ? params.get('token') : 'nfEoVODMHqpKHDTy26Coe2srv7Av'));
+    xhttp.setRequestHeader('Authorization', 'Bearer ' + token);
   }
-
 
   function payNow(jsonData) {
     let xhttp = new XMLHttpRequest();
@@ -394,6 +421,7 @@
         let res = JSON.parse(this.responseText);
         if (res.data) {
           jsonData.referenceNumber = res.data;
+
           xhttp.open("POST", apiUrlEndPoint + 'iframe/url', true);
           setRequestHeaders(xhttp);
           xhttp.onreadystatechange = function () {
@@ -402,8 +430,12 @@
               if (res.data) {
                 let url = res.data.split("/v1/");
                 url = apiUrlEndPoint + url[1];
-                var node = document.getElementById("myIframe").src = url;
-                document.getElementById("payment-modal-id").style.display = "flex";
+                if (jsonData.consumerAuthentication && jsonData.redirectUrl) {
+                  window.location.href = url;
+                } else {
+                  const node = document.getElementById("myIframe").src = url;
+                  document.getElementById("payment-modal-id").style.display = "flex";
+                }
               } else {
                 alert("Error occurred.");
               }
