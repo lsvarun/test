@@ -415,32 +415,36 @@
     setRequestHeaders(xhttp)
 
     xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        let res = JSON.parse(this.responseText);
-        if (res.data) {
-          jsonData.referenceNumber = res.data;
+      if (this.readyState == 4) {
+        if(this.status == 200) {
+          let res = JSON.parse(this.responseText);
+          if (res.data) {
+            jsonData.referenceNumber = res.data;
 
-          xhttp.open("POST", apiUrlEndPoint + 'iframe/url', true);
-          setRequestHeaders(xhttp);
-          xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-              let res = JSON.parse(this.responseText);
-              if (res.data) {
-                let url = res.data.split("/v1/");
-                url = apiUrlEndPoint + url[1];
-                if (jsonData.consumerAuthentication && jsonData.redirectUrl) {
-                  window.location.href = url;
+            xhttp.open("POST", apiUrlEndPoint + 'iframe/url', true);
+            setRequestHeaders(xhttp);
+            xhttp.onreadystatechange = function () {
+              if (this.readyState == 4 && this.status == 200) {
+                let res = JSON.parse(this.responseText);
+                if (res.data) {
+                  let url = res.data.split("/v1/");
+                  url = apiUrlEndPoint + url[1];
+                  if (jsonData.consumerAuthentication && jsonData.redirectUrl) {
+                    window.location.href = url;
+                  } else {
+                    const node = document.getElementById("myIframe").src = url;
+                    document.getElementById("payment-modal-id").style.display = "flex";
+                  }
                 } else {
-                  const node = document.getElementById("myIframe").src = url;
-                  document.getElementById("payment-modal-id").style.display = "flex";
+                  alert("Error occurred.");
                 }
-              } else {
-                alert("Error occurred.");
+                document.getElementById('loader').style.display = "none";
               }
-              document.getElementById('loader').style.display = "none";
-            }
-          };
-          xhttp.send(JSON.stringify(jsonData));
+            };
+            xhttp.send(JSON.stringify(jsonData));
+          }
+        } else {
+          alert('Pass token in query param': '+ token);
         }
       }
     };
