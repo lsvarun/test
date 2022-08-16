@@ -250,7 +250,7 @@
       <div class="form-control">
         <label>Redirect URL</label>
         <input name="redirectUrl" type="text" id="redirectUrl"
-          value="https://en4sbdaskcvm4.x.pipedream.net/redirectUrl">
+          value="https://lsvarun.github.io/requestbin/">
       </div>
       <div class=" form-control">
         <label>Card Holder Name</label>
@@ -307,10 +307,9 @@
   <h1 id="txn_response">Response</h1>
 </body>
 <script>
-  // const apiUrlEndPoint = 'https://8208-180-188-224-239.ngrok.io/api/v1/'
-  // const apiUrlEndPoint = "http://localhost:4000/api/v1/"; // Local
-  const apiUrlEndPoint = "https://api-payments.stayntouch.plus/api/v1/"; // Production
-  // const apiUrlEndPoint = "https://payments.dev.stayntouchpay.com/v1/"; // Dev
+//   const apiUrlEndPoint = "http://localhost:4000/api/v1/"; // Local
+  const apiUrlEndPoint = "https://payments.stayntouchpay.com/v1/"; // Production
+//   const apiUrlEndPoint = "https://payments.dev.stayntouchpay.com/v1/"; // Dev
 
   window.addEventListener('message', function messageListener(event) {
     const eventMessage = event.data?.message;
@@ -347,7 +346,6 @@
       state: parsedData.state,
       address: parsedData.address,
       postalCode: parsedData.postalCode,
-      email: 'example@example.com',
       country: 'IND'
     };
 
@@ -400,7 +398,7 @@
     document.getElementById("payment-modal-id").style.display = "none";
   }));
 
-  const token = new URLSearchParams(window.location.search).has('token') ? new URLSearchParams(window.location.search).get('token') : 'ojnSpxyDkkYffr674k0hWXN83yKF';
+  const token = new URLSearchParams(window.location.search).has('token') ? new URLSearchParams(window.location.search).get('token') : 'CNJOAhTiQDuAR3NEvr1gtroL5HYo';
 
   function setRequestHeaders(xhttp) {
     xhttp.setRequestHeader('X-MERCHANT-ID', '00000000-61a0-a2be-2990-f501fe9db655');
@@ -417,32 +415,36 @@
     setRequestHeaders(xhttp)
 
     xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        let res = JSON.parse(this.responseText);
-        if (res.data) {
-          jsonData.referenceNumber = res.data;
+      if (this.readyState == 4) {
+        if(this.status == 200) {
+          let res = JSON.parse(this.responseText);
+          if (res.data) {
+            jsonData.referenceNumber = res.data;
 
-          xhttp.open("POST", apiUrlEndPoint + 'iframe/url', true);
-          setRequestHeaders(xhttp);
-          xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-              let res = JSON.parse(this.responseText);
-              if (res.data) {
-                let url = res.data.split("/v1/");
-                url = apiUrlEndPoint + url[1];
-                if (jsonData.consumerAuthentication && jsonData.redirectUrl) {
-                  window.location.href = url;
+            xhttp.open("POST", apiUrlEndPoint + 'iframe/url', true);
+            setRequestHeaders(xhttp);
+            xhttp.onreadystatechange = function () {
+              if (this.readyState == 4 && this.status == 200) {
+                let res = JSON.parse(this.responseText);
+                if (res.data) {
+                  let url = res.data.split("/v1/");
+                  url = apiUrlEndPoint + url[1];
+                  if (jsonData.consumerAuthentication && jsonData.redirectUrl) {
+                    window.location.href = url;
+                  } else {
+                    const node = document.getElementById("myIframe").src = url;
+                    document.getElementById("payment-modal-id").style.display = "flex";
+                  }
                 } else {
-                  const node = document.getElementById("myIframe").src = url;
-                  document.getElementById("payment-modal-id").style.display = "flex";
+                  alert("Error occurred.");
                 }
-              } else {
-                alert("Error occurred.");
+                document.getElementById('loader').style.display = "none";
               }
-              document.getElementById('loader').style.display = "none";
-            }
-          };
-          xhttp.send(JSON.stringify(jsonData));
+            };
+            xhttp.send(JSON.stringify(jsonData));
+          }
+        } else {
+          alert('Pass token in query param: '+ token);
         }
       }
     };
