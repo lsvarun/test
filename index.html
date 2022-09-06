@@ -429,7 +429,7 @@
                 if (res.data) {
                   let url = res.data.split("/v1/");
                   url = apiUrlEndPoint + url[1];
-                  if (jsonData.consumerAuthentication && jsonData.redirectUrl) {
+                  if (jsonData.redirectUrl) {
                     window.location.href = url;
                   } else {
                     const node = document.getElementById("myIframe").src = url;
